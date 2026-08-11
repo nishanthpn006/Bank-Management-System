@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class BankManagementSystem {
 
+    // Account class
     static class Account {
         int accountId;
         String name;
@@ -14,58 +15,84 @@ public class BankManagementSystem {
             this.balance = balance;
         }
 
-        void display() {
+        void displayAccount() {
+            System.out.println("--------------------------------");
             System.out.println("Account ID : " + accountId);
             System.out.println("Name       : " + name);
-            System.out.println("Balance    : Rs." + balance);
+            System.out.printf("Balance    : Rs. %.2f%n", balance);
+            System.out.println("--------------------------------");
         }
     }
 
+    // Week 1 storage: ArrayList
     static ArrayList<Account> accounts = new ArrayList<>();
+
     static Scanner scanner = new Scanner(System.in);
 
-    // Manual search using loop
+    // Manual search using iteration
     static Account findAccount(int accountId) {
+
         for (Account account : accounts) {
+
             if (account.accountId == accountId) {
                 return account;
             }
         }
+
         return null;
     }
 
+    // Create Account
     static void createAccount() {
+
+        System.out.println("\n===== CREATE ACCOUNT =====");
+
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
         scanner.nextLine();
 
-        // Check duplicate account ID
-        if (findAccount(accountId) != null) {
-            System.out.println("Account ID already exists.");
-            return;
+        // Manual iteration is used to check duplicate ID
+        for (Account account : accounts) {
+
+            if (account.accountId == accountId) {
+                System.out.println("Account ID already exists.");
+                return;
+            }
         }
 
         System.out.print("Enter Account Holder Name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Enter Initial Deposit: ");
-        double balance = scanner.nextDouble();
+        if (name.trim().isEmpty()) {
+            System.out.println("Name cannot be empty.");
+            return;
+        }
 
-        if (balance < 0) {
+        System.out.print("Enter Initial Deposit: ");
+        double initialDeposit = scanner.nextDouble();
+
+        if (initialDeposit < 0) {
             System.out.println("Initial deposit cannot be negative.");
             return;
         }
 
-        Account account = new Account(accountId, name, balance);
-        accounts.add(account);
+        Account newAccount =
+                new Account(accountId, name, initialDeposit);
+
+        accounts.add(newAccount);
 
         System.out.println("Account created successfully.");
     }
 
+    // Deposit
     static void deposit() {
+
+        System.out.println("\n===== DEPOSIT =====");
+
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
+        // Manual search
         Account account = findAccount(accountId);
 
         if (account == null) {
@@ -81,16 +108,21 @@ public class BankManagementSystem {
             return;
         }
 
-        account.balance += amount;
+        account.balance = account.balance + amount;
 
         System.out.println("Deposit successful.");
-        System.out.println("Updated Balance: Rs." + account.balance);
+        System.out.printf("Current Balance: Rs. %.2f%n", account.balance);
     }
 
+    // Withdraw
     static void withdraw() {
+
+        System.out.println("\n===== WITHDRAW =====");
+
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
+        // Manual search
         Account account = findAccount(accountId);
 
         if (account == null) {
@@ -111,16 +143,21 @@ public class BankManagementSystem {
             return;
         }
 
-        account.balance -= amount;
+        account.balance = account.balance - amount;
 
         System.out.println("Withdrawal successful.");
-        System.out.println("Updated Balance: Rs." + account.balance);
+        System.out.printf("Current Balance: Rs. %.2f%n", account.balance);
     }
 
+    // Balance Check
     static void balanceCheck() {
+
+        System.out.println("\n===== BALANCE CHECK =====");
+
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
+        // Manual search
         Account account = findAccount(accountId);
 
         if (account == null) {
@@ -128,19 +165,23 @@ public class BankManagementSystem {
             return;
         }
 
-        account.display();
+        account.displayAccount();
     }
 
+    // Main menu
     public static void main(String[] args) {
 
         while (true) {
 
-            System.out.println("\n===== BANK MANAGEMENT SYSTEM =====");
+            System.out.println("\n=================================");
+            System.out.println("     BANK MANAGEMENT SYSTEM");
+            System.out.println("=================================");
             System.out.println("1. Create Account");
             System.out.println("2. Deposit");
             System.out.println("3. Withdraw");
             System.out.println("4. Balance Check");
             System.out.println("5. Exit");
+            System.out.println("=================================");
 
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -164,12 +205,15 @@ public class BankManagementSystem {
                     break;
 
                 case 5:
-                    System.out.println("Thank you for using the Bank Management System.");
+                    System.out.println(
+                            "Thank you for using Bank Management System."
+                    );
+
                     scanner.close();
                     return;
 
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
