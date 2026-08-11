@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class BankManagementSystem {
@@ -24,23 +24,11 @@ public class BankManagementSystem {
         }
     }
 
-    // Week 1 storage: ArrayList
-    static ArrayList<Account> accounts = new ArrayList<>();
+    // Week 2 storage: HashMap
+    // Account ID is used as the key
+    static HashMap<Integer, Account> accounts = new HashMap<>();
 
     static Scanner scanner = new Scanner(System.in);
-
-    // Manual search using iteration
-    static Account findAccount(int accountId) {
-
-        for (Account account : accounts) {
-
-            if (account.accountId == accountId) {
-                return account;
-            }
-        }
-
-        return null;
-    }
 
     // Create Account
     static void createAccount() {
@@ -51,13 +39,10 @@ public class BankManagementSystem {
         int accountId = scanner.nextInt();
         scanner.nextLine();
 
-        // Manual iteration is used to check duplicate ID
-        for (Account account : accounts) {
-
-            if (account.accountId == accountId) {
-                System.out.println("Account ID already exists.");
-                return;
-            }
+        // Direct duplicate check using HashMap
+        if (accounts.containsKey(accountId)) {
+            System.out.println("Account ID already exists.");
+            return;
         }
 
         System.out.print("Enter Account Holder Name: ");
@@ -79,7 +64,8 @@ public class BankManagementSystem {
         Account newAccount =
                 new Account(accountId, name, initialDeposit);
 
-        accounts.add(newAccount);
+        // Store account using account ID as key
+        accounts.put(accountId, newAccount);
 
         System.out.println("Account created successfully.");
     }
@@ -92,8 +78,8 @@ public class BankManagementSystem {
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
-        // Manual search
-        Account account = findAccount(accountId);
+        // Direct lookup using HashMap
+        Account account = accounts.get(accountId);
 
         if (account == null) {
             System.out.println("Account not found.");
@@ -104,14 +90,19 @@ public class BankManagementSystem {
         double amount = scanner.nextDouble();
 
         if (amount <= 0) {
-            System.out.println("Deposit amount must be greater than zero.");
+            System.out.println(
+                    "Deposit amount must be greater than zero."
+            );
             return;
         }
 
         account.balance = account.balance + amount;
 
         System.out.println("Deposit successful.");
-        System.out.printf("Current Balance: Rs. %.2f%n", account.balance);
+        System.out.printf(
+                "Current Balance: Rs. %.2f%n",
+                account.balance
+        );
     }
 
     // Withdraw
@@ -122,8 +113,8 @@ public class BankManagementSystem {
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
-        // Manual search
-        Account account = findAccount(accountId);
+        // Direct lookup using HashMap
+        Account account = accounts.get(accountId);
 
         if (account == null) {
             System.out.println("Account not found.");
@@ -134,7 +125,9 @@ public class BankManagementSystem {
         double amount = scanner.nextDouble();
 
         if (amount <= 0) {
-            System.out.println("Withdrawal amount must be greater than zero.");
+            System.out.println(
+                    "Withdrawal amount must be greater than zero."
+            );
             return;
         }
 
@@ -146,7 +139,10 @@ public class BankManagementSystem {
         account.balance = account.balance - amount;
 
         System.out.println("Withdrawal successful.");
-        System.out.printf("Current Balance: Rs. %.2f%n", account.balance);
+        System.out.printf(
+                "Current Balance: Rs. %.2f%n",
+                account.balance
+        );
     }
 
     // Balance Check
@@ -157,8 +153,8 @@ public class BankManagementSystem {
         System.out.print("Enter Account ID: ");
         int accountId = scanner.nextInt();
 
-        // Manual search
-        Account account = findAccount(accountId);
+        // Direct lookup using HashMap
+        Account account = accounts.get(accountId);
 
         if (account == null) {
             System.out.println("Account not found.");
@@ -208,12 +204,13 @@ public class BankManagementSystem {
                     System.out.println(
                             "Thank you for using Bank Management System."
                     );
-
                     scanner.close();
                     return;
 
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println(
+                            "Invalid choice. Please try again."
+                    );
             }
         }
     }
